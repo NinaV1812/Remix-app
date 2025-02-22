@@ -26,7 +26,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async () => {
   const contact = await createEmptyContact();
-  return redirect(`/contacts/${contact.id}/edit`);
+  return redirect(`/contacts/${contact?._id}/edit`);
 };
 
 export const links: LinksFunction = () => [
@@ -89,12 +89,12 @@ export default function App() {
             {contacts.length ? (
               <ul>
                 {contacts.map((contact) => (
-                  <li key={contact.id}>
+                  <li key={contact._id}>
                     <NavLink
                       className={({ isActive, isPending }) =>
                         isActive ? "active" : isPending ? "pending" : ""
                       }
-                      to={`contacts/${contact.id}`}
+                      to={`contacts/${contact._id}`}
                     >
                       {contact.first || contact.last ? (
                         <>
