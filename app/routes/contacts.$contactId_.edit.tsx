@@ -41,7 +41,6 @@ export default function EditContact() {
           name="last"
           defaultValue={contact.last}
           placeholder="Last"
-          // className='input-field-label'
         />
       </p>
       <InputField

@@ -1,14 +1,15 @@
 import { NavLink } from "@remix-run/react";
-import { ReactNode } from "react";
+import { ContactType } from "../data";
+import { ContactName } from "../components/ContactName";
 
 type NavLinknComponentProps = {
   navigationDestination: string;
-  contactName: string | ReactNode;
+  contact: ContactType;
   isContactFavorite?: boolean;
 };
 const NavLinkComponent = ({
   navigationDestination,
-  contactName,
+  contact,
   isContactFavorite,
 }: NavLinknComponentProps) => {
   const getNavLinkClass = ({
@@ -26,7 +27,7 @@ const NavLinkComponent = ({
       to={navigationDestination}
       style={{ display: "flex", gap: "4px" }}
     >
-      {contactName}
+      <ContactName contact={contact} />
       {isContactFavorite ? <span>★</span> : null}
     </NavLink>
   );

@@ -16,7 +16,7 @@ import appStylesHref from "./app.css?url";
 import { useEffect, useState, FormEvent } from "react";
 import NavLinkComponent from "./components/NavLinkComponent";
 import SearchForm from "./components/SearchForm";
-import CreateContactForm from "./components/CreateContactForm";
+import { ButtonForm } from "./components/ButtonForm";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -56,13 +56,6 @@ export default function App() {
   const getDetailsClass =
     navigation.state === "loading" && !searching ? "loading" : "";
 
-  const getContactName = (contact: ContactType) =>
-    contact?.first || contact?.last ? (
-      `${contact?.first} ${contact?.last}`
-    ) : (
-      <i>No Name</i>
-    );
-
   return (
     <html lang="en">
       <head>
@@ -81,7 +74,12 @@ export default function App() {
               searching={searching}
               onFormChange={onFormChange}
             />
-            <CreateContactForm />
+            <ButtonForm
+              method="post"
+              buttonType="submit"
+              buttonText={"New"}
+              id="create-new-contact"
+            />
           </div>
           <nav>
             {contacts.length ? (
@@ -90,7 +88,7 @@ export default function App() {
                   <li key={contact._id}>
                     <NavLinkComponent
                       navigationDestination={`contacts/${contact._id}`}
-                      contactName={getContactName(contact)}
+                      contact={contact}
                       isContactFavorite={contact?.favorite}
                     />
                   </li>
