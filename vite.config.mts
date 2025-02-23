@@ -9,4 +9,7 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  // server: {
+  //   port: 6006, // Port Storybook runs on by default
+  // },
 });

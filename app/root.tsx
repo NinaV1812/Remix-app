@@ -1,21 +1,22 @@
 import {
-  Form,
   Links,
   Meta,
   Scripts,
   ScrollRestoration,
   Outlet,
   useLoaderData,
-  NavLink,
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { createEmptyContact, getContacts } from "./data";
+import { createEmptyContact, getContacts, ContactType } from "./data";
 import { json, redirect } from "@remix-run/node";
 
 import appStylesHref from "./app.css?url";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
+import NavLinkComponent from "./components/NavLinkComponent";
+import SearchForm from "./components/SearchForm";
+import CreateContactForm from "./components/CreateContactForm";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -45,6 +46,22 @@ export default function App() {
   useEffect(() => {
     setQuery(q || "");
   }, [q]);
+  const onFormChange = (event: FormEvent<HTMLFormElement>) => {
+    const isFirstSearch = q === null;
+    submit(event.currentTarget, {
+      replace: !isFirstSearch,
+    });
+  };
+
+  const getDetailsClass =
+    navigation.state === "loading" && !searching ? "loading" : "";
+
+  const getContactName = (contact: ContactType) =>
+    contact?.first || contact?.last ? (
+      `${contact?.first} ${contact?.last}`
+    ) : (
+      <i>No Name</i>
+    );
 
   return (
     <html lang="en">
@@ -58,53 +75,24 @@ export default function App() {
         <div id="sidebar">
           <h1>Remix Contacts</h1>
           <div>
-            <Form
-              id="search-form"
-              role="search"
-              onChange={(event) => {
-                const isFirstSearch = q === null;
-                submit(event.currentTarget, {
-                  replace: !isFirstSearch,
-                });
-              }}
-            >
-              <input
-                id="q"
-                aria-label="Search contacts"
-                className={searching ? "loading" : ""}
-                // defaultValue={q || ""}
-                placeholder="Search"
-                type="search"
-                name="q"
-                onChange={(event) => setQuery(event.currentTarget.value)}
-                value={query}
-              />
-              <div id="search-spinner" aria-hidden hidden={!searching} />
-            </Form>
-            <Form method="post">
-              <button type="submit">New</button>
-            </Form>
+            <SearchForm
+              query={query}
+              setQuery={setQuery}
+              searching={searching}
+              onFormChange={onFormChange}
+            />
+            <CreateContactForm />
           </div>
           <nav>
             {contacts.length ? (
               <ul>
-                {contacts.map((contact) => (
+                {contacts.map((contact: ContactType) => (
                   <li key={contact._id}>
-                    <NavLink
-                      className={({ isActive, isPending }) =>
-                        isActive ? "active" : isPending ? "pending" : ""
-                      }
-                      to={`contacts/${contact._id}`}
-                    >
-                      {contact.first || contact.last ? (
-                        <>
-                          {contact.first} {contact.last}
-                        </>
-                      ) : (
-                        <i>No Name</i>
-                      )}{" "}
-                      {contact.favorite ? <span>★</span> : null}
-                    </NavLink>
+                    <NavLinkComponent
+                      navigationDestination={`contacts/${contact._id}`}
+                      contactName={getContactName(contact)}
+                      isContactFavorite={contact?.favorite}
+                    />
                   </li>
                 ))}
               </ul>
@@ -115,12 +103,7 @@ export default function App() {
             )}
           </nav>
         </div>
-        <div
-          className={
-            navigation.state === "loading" && !searching ? "loading" : ""
-          }
-          id="detail"
-        >
+        <div className={getDetailsClass} id="detail">
           <Outlet />
         </div>
         <ScrollRestoration />

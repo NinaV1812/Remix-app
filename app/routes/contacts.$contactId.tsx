@@ -1,6 +1,6 @@
 import type { FunctionComponent } from "react";
 import { json } from "@remix-run/node";
-import { Form, useLoaderData, useFetcher } from "@remix-run/react";
+import { Form, useLoaderData, useFetcher, useRouteError } from "@remix-run/react";
 
 import type { ContactRecord } from "../data";
 import { getContact, updateContact } from "../data";
@@ -11,7 +11,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
   const contact = await getContact(params.contactId);
   if (!contact) {
-    throw new Response("Not Found", { status: 404 });
+    throw new Response("Not Foundfff", { status: 404 });
   }
   return json({ contact });
 };
@@ -29,6 +29,14 @@ export const action = async ({
 
 export default function Contact() {
   const { contact } = useLoaderData<typeof loader>();
+  // const error = useRouteError();
+
+  // if (error) {
+  //   if (error instanceof Response && error.status === 404) {
+  //     return <h2>Contact not found.</h2>;
+  //   }
+  //   return <h2>Something went wrong!</h2>;
+  // }
 
   return (
     <div id="contact">
@@ -87,7 +95,7 @@ export default function Contact() {
   );
 }
 
-const Favorite: FunctionComponent<{
+export const Favorite: FunctionComponent<{
   contact: Pick<ContactRecord, "favorite">;
 }> = ({ contact }) => {
   const fetcher = useFetcher();
