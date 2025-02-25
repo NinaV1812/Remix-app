@@ -1,11 +1,12 @@
 import { Form } from "@remix-run/react";
+import { SearchStatus } from "../enums";
 
-interface SearchFormProps {
+type SearchFormProps = {
   query: string;
   setQuery: (value: string) => void;
   searching?: boolean;
   onFormChange: (event: React.ChangeEvent<HTMLFormElement>) => void;
-}
+};
 
 const SearchForm = ({
   query,
@@ -15,17 +16,23 @@ const SearchForm = ({
 }: SearchFormProps) => {
   return (
     <Form id="search-form" role="search" onChange={onFormChange}>
+      <div
+        id="search-spinner"
+        aria-hidden
+        hidden={!searching}
+        data-testid="search-spinner"
+      />
+
       <input
         id="q"
         aria-label="Search contacts"
-        className={searching ? "loading" : ""}
+        className={searching ? SearchStatus.Loading : SearchStatus.Default}
         placeholder="Search"
         type="search"
         name="q"
         onChange={(event) => setQuery(event.currentTarget.value)}
         value={query}
       />
-      <div id="search-spinner" aria-hidden hidden={!searching} />
     </Form>
   );
 };

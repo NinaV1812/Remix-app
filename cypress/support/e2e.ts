@@ -15,3 +15,17 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+
+// before(() => {
+//     cy.startMongo().then((uri) => {
+//       Cypress.env('MONGO_URI', uri); // Optionally store the Mongo URI in environment variable
+//     });
+//   });
+  
+//   beforeEach(() => {
+//     cy.clearDatabase(); // Clean the database before each test
+//   });
+  
+//   after(() => {
+//     cy.stopMongo(); // Cleanup after tests
+//   });

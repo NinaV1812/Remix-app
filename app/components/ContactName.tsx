@@ -1,9 +1,11 @@
 import { ContactType } from "../data";
 
-export const ContactName = ({ contact }: { contact: ContactType }) => {
-  return contact?.first || contact?.last ? (
-    `${contact?.first} ${contact?.last}`
-  ) : (
-    <i>No Name</i>
-  );
+interface ContactNameProps {
+  contact: ContactType;
+}
+
+export const ContactName = ({ contact }: ContactNameProps) => {
+  const fullName = [contact.first, contact.last].filter(Boolean).join(" ");
+
+  return fullName || <i>No Name</i>;
 };

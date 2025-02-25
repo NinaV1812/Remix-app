@@ -1,12 +1,14 @@
-import type { FunctionComponent } from "react";
 import { useFetcher } from "@remix-run/react";
-import type { ContactRecord } from "../data";
+import type { ContactType } from "../data";
 
-export const Favorite: FunctionComponent<{
-  contact: Pick<ContactRecord, "favorite">;
-}> = ({ contact }) => {
+type FavoriteProps = {
+  contact: Pick<ContactType, "favorite">;
+};
+
+export const Favorite = ({ contact }: FavoriteProps) => {
   const fetcher = useFetcher();
-  const favorite = contact.favorite;
+  const isSubmitting = fetcher.state !== "idle";
+  const favorite: boolean = contact.favorite ?? false;
 
   return (
     <fetcher.Form method="post">
@@ -14,8 +16,9 @@ export const Favorite: FunctionComponent<{
         aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
         name="favorite"
         value={favorite ? "false" : "true"}
+       disabled={isSubmitting}
       >
-        {favorite ? "★" : "☆"}
+        {isSubmitting ? "⏳" : favorite ? "★" : "☆"}
       </button>
     </fetcher.Form>
   );

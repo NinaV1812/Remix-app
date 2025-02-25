@@ -17,6 +17,7 @@ import { useEffect, useState, FormEvent } from "react";
 import NavLinkComponent from "./components/NavLinkComponent";
 import SearchForm from "./components/SearchForm";
 import { ButtonForm } from "./components/ButtonForm";
+import { SearchStatus } from "./enums";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -54,7 +55,9 @@ export default function App() {
   };
 
   const getDetailsClass =
-    navigation.state === "loading" && !searching ? "loading" : "";
+    navigation.state === SearchStatus.Loading && !searching
+      ? SearchStatus.Loading
+      : "";
 
   return (
     <html lang="en">
@@ -77,7 +80,7 @@ export default function App() {
             <ButtonForm
               method="post"
               buttonType="submit"
-              buttonText={"New"}
+              buttonText="New"
               id="create-new-contact"
             />
           </div>
@@ -85,7 +88,7 @@ export default function App() {
             {contacts.length ? (
               <ul>
                 {contacts.map((contact: ContactType) => (
-                  <li key={contact._id}>
+                  <li key={contact._id} data-cy="contact-item">
                     <NavLinkComponent
                       navigationDestination={`contacts/${contact._id}`}
                       contact={contact}

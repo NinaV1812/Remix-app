@@ -13,7 +13,7 @@ export const ButtonForm = ({
   buttonText,
   handleSubmit,
   buttonType,
-  ...rest 
+  ...rest
 }: ActionFormProps) => {
   return (
     <Form action={action} method={method} onSubmit={handleSubmit} {...rest}>

@@ -18,11 +18,6 @@ type ContactMutation = {
   favorite?: boolean;
 };
 
-export type ContactRecord = ContactMutation & {
-  _id: string;
-  createdAt: string;
-};
-
 export type ContactType = {
   _id: string;
   first?: string;
@@ -38,13 +33,22 @@ export const getAll = async (): Promise<ContactType[]> => {
   try {
     const contacts = await Contact.find().sort({ createdAt: -1, last: 1 });
 
-    //TODO Refactor
-    return contacts.map((contact) => ({
-      ...contact.toObject(),
-      _id: contact._id.toString(),
-      createdAt: new Date(contact.createdAt),
-    }));
+    if (contacts.length === 0) {
+      console.log("No contacts found.");
+    }
+
+    // TODO Refactor
+    return contacts.map((contact) => {
+      const { _id, createdAt, ...rest } = contact.toObject();
+      return {
+        ...rest,
+        _id: _id.toString(),
+        createdAt: new Date(createdAt),
+      };
+    });
   } catch (error) {
+    console.error("Error fetching contacts:", error);
+
     throw new Error("Failed to fetch contacts");
   }
 };
@@ -52,7 +56,10 @@ export const getAll = async (): Promise<ContactType[]> => {
 export const getContact = async (id: string): Promise<ContactType> => {
   try {
     const contact = await Contact.findById(id);
-    invariant(contact, `No contact found for ${id}`);
+    if (!contact) {
+      console.error(`Contact not found for ID: ${id}`);
+      throw new Error(`No contact found for ID ${id}`);
+    }
     //TODO Refactor
     return {
       ...contact.toObject(),
@@ -60,7 +67,13 @@ export const getContact = async (id: string): Promise<ContactType> => {
       createdAt: new Date(contact.createdAt),
     };
   } catch (error) {
-    throw new Response("Not Founddd", { status: 404 });
+    console.error("Error retrieving contact:", error);
+
+    if (error instanceof Error && error.message.includes("No contact found")) {
+      throw new Response("Contact not found", { status: 404 });
+    }
+
+    throw new Response("Internal Server Error", { status: 500 });
   }
 };
 

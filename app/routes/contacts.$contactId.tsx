@@ -12,9 +12,10 @@ import { ContactName } from "../components/ContactName";
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
   const contact = await getContact(params.contactId);
-  if (!contact) {
-    throw new Response("Not Foundfff", { status: 404 });
-  }
+  // if (!contact) {
+  //   console.log('IN NO CONTACT')
+  //   return new Response("Not Foundfff", { status: 408 });
+  // }
   return json({ contact });
 };
 
@@ -62,7 +63,7 @@ export default function Contact() {
         {contact.notes ? <p>{contact.notes}</p> : null}
 
         <div>
-          <ButtonForm action="edit" buttonType="submit" buttonText={"Edit"} />
+          <ButtonForm action="edit" buttonType="submit" buttonText="Edit" />
 
           <ButtonForm
             action="destroy"

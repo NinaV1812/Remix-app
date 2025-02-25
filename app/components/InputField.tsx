@@ -4,9 +4,9 @@ type InputFieldProps = {
   defaultValue?: string;
   placeholder?: string;
   type?: string;
-  ariaLabel?: string;
   isTextArea?: boolean;
-};
+} & React.InputHTMLAttributes<HTMLInputElement> &
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 const InputField = ({
   label,
@@ -14,24 +14,33 @@ const InputField = ({
   defaultValue = "",
   placeholder = "",
   type = "text",
-  ariaLabel,
   isTextArea = false,
+  id,
+  ...rest
 }: InputFieldProps) => {
+  const inputId = id || `input-${name}`;
+
   return (
-    <label>
+    <label htmlFor={inputId}>
       <span>{label}</span>
       {isTextArea ? (
-        <textarea defaultValue={defaultValue} name={name} rows={6} />
+        <textarea
+          id={inputId}
+          name={name}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          rows={6}
+          {...rest}
+        />
       ) : (
-        <>
-          <input
-            type={type}
-            name={name}
-            defaultValue={defaultValue}
-            placeholder={placeholder}
-            aria-label={ariaLabel || label}
-          />
-        </>
+        <input
+          id={inputId}
+          type={type}
+          name={name}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          {...rest}
+        />
       )}
     </label>
   );
