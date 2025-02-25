@@ -30,6 +30,7 @@ const InputField = ({
           defaultValue={defaultValue}
           placeholder={placeholder}
           rows={6}
+          data-test={inputId}
           {...rest}
         />
       ) : (
@@ -39,6 +40,7 @@ const InputField = ({
           name={name}
           defaultValue={defaultValue}
           placeholder={placeholder}
+          data-test={inputId}
           {...rest}
         />
       )}

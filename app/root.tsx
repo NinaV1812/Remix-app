@@ -69,7 +69,7 @@ export default function App() {
       </head>
       <body>
         <div id="sidebar">
-          <h1>Remix Contacts</h1>
+          <h1 data-test="remix-contacts-heading">Remix Contacts</h1>
           <div>
             <SearchForm
               query={query}
@@ -88,7 +88,7 @@ export default function App() {
             {contacts.length ? (
               <ul>
                 {contacts.map((contact: ContactType) => (
-                  <li key={contact._id} data-cy="contact-item">
+                  <li key={contact._id} data-test="contact-item">
                     <NavLinkComponent
                       navigationDestination={`contacts/${contact._id}`}
                       contact={contact}

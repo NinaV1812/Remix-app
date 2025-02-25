@@ -62,8 +62,14 @@ export default function EditContact() {
         isTextArea
       />
       <p>
-        <button type="submit">Save</button>
-        <button onClick={() => navigate(-1)} type="button">
+        <button type="submit" data-test="save-edit-contact-button">
+          Save
+        </button>
+        <button
+          onClick={() => navigate(-1)}
+          type="button"
+          data-test="save-cancel-contact-button"
+        >
           Cancel
         </button>
       </p>
