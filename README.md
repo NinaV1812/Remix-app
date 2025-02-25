@@ -2,37 +2,33 @@
 
 - [Remix Docs](https://remix.run/docs)
 
-## Development
+# Description
 
-From your terminal:
+The project is meant to demonstrate use of some technologies:
 
-```sh
+- React/Remix
+- Typescript
+- interactions with no-sql DBs
+- Cypress tests
+
+Full disclosure, as a base I took an example project from [Remix documentation](https://remix.run/docs/en/main/start/tutorial), refactored fo better readibility, split it into smaller reusable components; implenented MongoDB
+
+## TODO
+
+- Implement proper e2e test with Cypress + Docker + TestContainer
+- Implement Storybook
+
+## Installation
+
+```bash
+git clone https://github.com/NinaV1812/Remix-app.git
+cd remix-app
+npm i
 npm run dev
 ```
+## Watch the Demo Video
 
-This starts your app in development mode, rebuilding assets on file changes.
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `remix build`
-
-- `build/server`
-- `build/client`
+<video width="600" controls>
+  <source src="./assets/video.mov" type="video/mov">
+  Your browser does not support the video tag.
+</video>
