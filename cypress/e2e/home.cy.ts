@@ -9,7 +9,7 @@ describe("home page", () => {
         return false; // Prevent Cypress from failing the test
       }
     });
-    cy.visit("http://localhost:5173");
+    cy.visit("/");
   });
 
   it("the h1 contains the correct text", () => {
@@ -20,5 +20,8 @@ describe("home page", () => {
     cy.getByData("remix-contacts-heading")
       .should("exist")
       .contains("Remix Contacts");
+  });
+  it("should display a list of contacts", () => {
+    cy.getByData("contact-item").should("have.length.greaterThan", 0);
   });
 });
