@@ -1,4 +1,4 @@
-describe("home page", () => {
+describe("Home page", () => {
   beforeEach(() => {
     Cypress.on("uncaught:exception", (err) => {
       if (

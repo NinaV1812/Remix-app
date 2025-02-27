@@ -9,7 +9,7 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { createEmptyContact, getContacts, ContactType } from "./data";
+import { createEmptyContact, getContacts } from "./data";
 import { json, redirect } from "@remix-run/node";
 
 import appStylesHref from "./app.css?url";
@@ -58,7 +58,7 @@ export default function App() {
     navigation.state === SearchStatus.Loading && !searching
       ? SearchStatus.Loading
       : "";
-
+  // console.log("CONTACTS IN ROOT", contacts);
   return (
     <html lang="en">
       <head>
@@ -85,17 +85,19 @@ export default function App() {
             />
           </div>
           <nav>
-            {contacts.length ? (
+            {contacts?.length ? (
               <ul>
-                {contacts.map((contact: ContactType) => (
-                  <li key={contact._id} data-test="contact-item">
-                    <NavLinkComponent
-                      navigationDestination={`contacts/${contact._id}`}
-                      contact={contact}
-                      isContactFavorite={contact?.favorite}
-                    />
-                  </li>
-                ))}
+                {contacts.map((contact) => {
+                  return (
+                    <li key={contact._id} data-test="contact-item">
+                      <NavLinkComponent
+                        navigationDestination={`contacts/${contact._id.toString()}`}
+                        contact={contact}
+                        isContactFavorite={contact?.favorite}
+                      />
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p>

@@ -1,15 +1,5 @@
 import { Schema, model } from 'mongoose';
-
-type ContactType = {
-    first?: string;
-    last?: string;
-    avatar?: string;
-    twitter?: string;
-    notes?: string;
-    favorite?: boolean;
-    createdAt: Date;
-  }
-  
+import { ContactType } from '../data';
 
 const contactSchema = new Schema<ContactType>({
   first: String,
@@ -21,4 +11,4 @@ const contactSchema = new Schema<ContactType>({
   createdAt: { type: Date, default: Date.now },
 });
 
-export const Contact = model("contacts", contactSchema);
+export const Contact = model("contact", contactSchema, "contacts");

@@ -1,56 +1,19 @@
-import { matchSorter } from "match-sorter";
-// @ts-expect-error - no types, but it's a tiny function
-import sortBy from "sort-by";
 import invariant from "tiny-invariant";
 import { Contact } from "./models/Contact";
 import { connectDB } from "./db";
-import * as mongoose from "mongoose";
+import { Types, Error } from "mongoose";
 
 connectDB(); // Ensure DB connection
 
-type ContactMutation = {
-  id?: string;
-  first?: string;
-  last?: string;
-  avatar?: string;
-  twitter?: string;
-  notes?: string;
-  favorite?: boolean;
-};
-
 export type ContactType = {
-  _id: string;
+  _id?: Types.ObjectId;
   first?: string;
   last?: string;
   avatar?: string;
   twitter?: string;
   notes?: string;
   favorite?: boolean;
-  createdAt: string | Date;
-};
-
-export const getAll = async (): Promise<ContactType[]> => {
-  try {
-    const contacts = await Contact.find().sort({ createdAt: -1, last: 1 });
-
-    if (contacts.length === 0) {
-      console.log("No contacts found.");
-    }
-
-    // TODO Refactor
-    return contacts.map((contact) => {
-      const { _id, createdAt, ...rest } = contact.toObject();
-      return {
-        ...rest,
-        _id: _id.toString(),
-        createdAt: new Date(createdAt),
-      };
-    });
-  } catch (error) {
-    console.error("Error fetching contacts:", error);
-
-    throw new Error("Failed to fetch contacts");
-  }
+  createdAt?: string | Date;
 };
 
 export const getContact = async (id: string): Promise<ContactType> => {
@@ -60,31 +23,21 @@ export const getContact = async (id: string): Promise<ContactType> => {
       console.error(`Contact not found for ID: ${id}`);
       throw new Error(`No contact found for ID ${id}`);
     }
-    //TODO Refactor
-    return {
-      ...contact.toObject(),
-      _id: contact._id.toString(),
-      createdAt: new Date(contact.createdAt),
-    };
+    return contact;
   } catch (error) {
-    console.error("Error retrieving contact:", error);
-
-    if (error instanceof Error && error.message.includes("No contact found")) {
-      throw new Response("Contact not found", { status: 404 });
-    }
-
-    throw new Response("Internal Server Error", { status: 500 });
+    console.log("Error retrieving contact:", error);
   }
 };
 
-export const updateContact = async (id: string, updates: ContactMutation) => {
+export const updateContact = async (id: string, updates: ContactType) => {
   try {
-    const createdAt = new Date().toISOString();
-    const newContact = { createdAt, ...updates };
-    const updatedContact = await Contact.findByIdAndUpdate(id, newContact, {
+    console.log("contactUpdates", updates);
+
+    const updatedContact = await Contact.findByIdAndUpdate(id, updates, {
       new: true,
     });
-    invariant(updatedContact, `No contact found for ${id}`);
+
+    invariant(updatedContact, `No contact found for ${updatedContact._id}`);
 
     return updatedContact;
   } catch (error) {
@@ -106,19 +59,26 @@ export async function createEmptyContact() {
     const profile = await createdProfile.save();
     return profile;
   } catch (error) {
-    if (error instanceof mongoose.Error.ValidationError) {
+    if (error instanceof Error.ValidationError) {
       throw new Error(`Bad request ${error}`);
     }
   }
 }
 
-export async function getContacts(query?: string | null) {
-  let contacts = await getAll();
+export const getContacts = async (query?: string): Promise<ContactType[]> => {
+  try {
+    if (query === null) {
+      query = ".*";
+    }
+    const contacts = await Contact.find({
+      $or: [
+        { first: new RegExp(query, "i") },
+        { last: new RegExp(query, "i") },
+      ],
+    }).sort({ last: 1, createAt: -1 });
 
-  if (query) {
-    contacts = matchSorter(contacts, query, {
-      keys: ["first", "last"],
-    });
+    return contacts;
+  } catch (error) {
+    throw new Error("Failed to fetch contacts. Please try again later.");
   }
-  return contacts.sort(sortBy("last", "createdAt"));
-}
+};

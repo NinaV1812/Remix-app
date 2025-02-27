@@ -1,12 +1,7 @@
 import { NavLink } from "@remix-run/react";
 import { ContactType } from "../data";
 import { ContactName } from "../components/ContactName";
-
-enum NavLinkStatus {
-  Active = "active",
-  Pending = "pending",
-  Default = "",
-}
+import { NavLinkStatus } from "../enums";
 
 type NavLinkComponentProps = {
   navigationDestination: string;
